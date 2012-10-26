@@ -3,6 +3,9 @@ ansible-stuff
 
 My ansible-stuff repository
 
+Look on http://ansible.cc and http://github.com/ansible/ansible for
+the real stuff
+
 update_alternatives
 -------------------
 
@@ -40,7 +43,7 @@ update-alternatives link=editor value=/usr/bin/vim.basic
 * Point to the highest priority installed alternatives
 
 ```
-update-alternatives link=edior value=best
+update-alternatives link=editor value=best
 ```
  
 
