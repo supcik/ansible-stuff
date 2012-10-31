@@ -45,7 +45,11 @@ update-alternatives link=editor value=/usr/bin/vim.basic
 ```
 update-alternatives link=editor value=best
 ```
- 
+
 
 #### Notes
 This applies to Debian and Ubuntu systems only!
+
+#### Installation
+Copy update_alternatives over to your ANSIBLE_LIBRARY directory.
+
