@@ -38,12 +38,12 @@ Handle debian `update-alternatives` in a idempotent way. Maintain symbolic links
 * This verifies that editor points to /usr/bin/vim.basic (if /usr/bin/vim.basic is a valid alternative)
 
 ```
-update-alternatives link=editor value=/usr/bin/vim.basic
+update-alternatives link=editor target=/usr/bin/vim.basic
 ```
 * Point to the highest priority installed alternatives
 
 ```
-update-alternatives link=editor value=best
+update-alternatives link=editor target=best
 ```
 
 
