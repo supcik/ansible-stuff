@@ -9,7 +9,7 @@ the real stuff
 update_alternatives
 -------------------
 
-Handle debian `update-alternatives` in a idempotent way. Maintain symbolic links determining default commands. Can ensure that the highest priority alternative is choosen or select a specific binary as the choosen one 
+Handle debian `update-alternatives` in a idempotent way. Maintain symbolic links determining default commands. Can ensure that the highest priority alternative is choosen or select a specific binary as the choosen one
 
 <table>
 <tr>
@@ -38,12 +38,12 @@ Handle debian `update-alternatives` in a idempotent way. Maintain symbolic links
 * This verifies that editor points to /usr/bin/vim.basic (if /usr/bin/vim.basic is a valid alternative)
 
 ```
-update-alternatives link=editor target=/usr/bin/vim.basic
+update_alternatives link=editor target=/usr/bin/vim.basic
 ```
 * Point to the highest priority installed alternatives
 
 ```
-update-alternatives link=editor target=best
+update_alternatives link=editor target=best
 ```
 
 
