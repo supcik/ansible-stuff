@@ -48,10 +48,10 @@ options:
       default: null
 examples:
 # One or more of the following:
-    - code: update-alternatives link=editor value=/usr/bin/vim.basic
+    - code: update-alternatives link=editor target=/usr/bin/vim.basic
       description: This verifies that editor points to /usr/bin/vim.basic (if /usr/bin/vim.basic is a valid alternative)
       
-    - code: update-alternatives link=edior value=best
+    - code: update-alternatives link=edior target=best
       description: Point to the highest priority installed alternatives
 requirements: [ update-alternatives ]
 """
