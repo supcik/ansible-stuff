@@ -93,13 +93,17 @@ def ua_status(m,link):
         m.exit_json(changed=True)
 
     result = re.match( r"""
-        ^Link:\s+(?P<link>.+)\n
+        ^(?:Name:\s+.+\n)?
+        Link:\s+(?P<link>.+)\n
         (?:Slaves:\n
         (?:\s+.+\n)*)?
         Status:\s+(?P<status>.+)\n
         Best:\s+(?P<best>.+)\n
         Value:\s+(?P<value>.+)
         """, out, re.MULTILINE|re.VERBOSE) 
+
+    if not result:
+        m.fail_json(msg="Couldn't parse update-alternatives output: %r" % (out,))
 
     return result.group('link'), result.group('best'), result.group('value')
 
