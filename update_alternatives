@@ -94,6 +94,8 @@ def ua_status(m,link):
 
     result = re.match( r"""
         ^Link:\s+(?P<link>.+)\n
+        (?:Slaves:\n
+        (?:\s+.+\n)*)?
         Status:\s+(?P<status>.+)\n
         Best:\s+(?P<best>.+)\n
         Value:\s+(?P<value>.+)
