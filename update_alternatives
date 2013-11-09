@@ -58,18 +58,23 @@ examples:
 requirements: [ update-alternatives ]
 """
 
-
+import subprocess
+import os.path
+import re
 import traceback
 # added to stave off future warnings about apt api
 import warnings
+
 warnings.filterwarnings('ignore', "apt API not stable yet", FutureWarning)
 
 # update-alternatives related constants
 UA = "/usr/sbin/update-alternatives"
 
+
 def run_ua(command):
     try:
-        cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        cmd = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE,
+                               stderr=subprocess.PIPE)
         out, err = cmd.communicate()
     except (OSError, IOError), e:
         rc = 1
@@ -83,18 +88,19 @@ def run_ua(command):
         rc = cmd.returncode
         return rc, out, err
 
-def ua_status(m,link):
 
+def ua_status(m, link):
     cmd = "%s --query %s" % (UA, link)
     rc, out, err = run_ua(cmd)
     if err == "update-alternatives: error: no alternatives for %s.\n" % (link):
         m.fail_json(msg="No alternatives for %s found" % (link))
 
     if rc:
-        m.fail_json(msg="'update-alternatives --query %s' failed: %s" % (link, err))
+        m.fail_json(
+            msg="'update-alternatives --query %s' failed: %s" % (link, err))
         m.exit_json(changed=True)
 
-    result = re.match( r"""
+    result = re.match(r"""
         ^(?:Name:\s+.+\n)?
         Link:\s+(?P<link>.+)\n
         (?:Slaves:\n
@@ -102,16 +108,17 @@ def ua_status(m,link):
         Status:\s+(?P<status>.+)\n
         Best:\s+(?P<best>.+)\n
         Value:\s+(?P<value>.+)
-        """, out, re.MULTILINE|re.VERBOSE) 
+        """, out, re.MULTILINE | re.VERBOSE)
 
     if not result:
-        m.fail_json(msg="Couldn't parse update-alternatives output: %r" % (out,))
+        m.fail_json(
+            msg="Couldn't parse update-alternatives output: %r" % (out,))
 
     return result.group('link'), result.group('best'), result.group('value')
 
 
 def best(m, link):
-    g, b, v = ua_status(m,link)
+    g, b, v = ua_status(m, link)
     if b == v:
         m.exit_json(changed=False)
     cmd = "%s --auto %s" % (UA, link)
@@ -120,12 +127,14 @@ def best(m, link):
         m.fail_json(msg="No alternatives for %s found" % (link))
 
     if rc:
-        m.fail_json(msg="'update-alternatives --auto %s' failed: %s" % (link, err))
+        m.fail_json(
+            msg="'update-alternatives --auto %s' failed: %s" % (link, err))
 
     m.exit_json(changed=True)
 
+
 def set_to_target(m, link, package):
-    g, b, v = ua_status(m,link)
+    g, b, v = ua_status(m, link)
     if package == v:
         m.exit_json(changed=False)
 
@@ -136,11 +145,12 @@ def set_to_target(m, link, package):
 
     m.exit_json(changed=True)
 
+
 def main():
     module = AnsibleModule(
-        argument_spec = dict(
-            link = dict(default=None, aliases=['name']),
-            package = dict(default=None, aliases=['pkg', 'path','target']),
+        argument_spec=dict(
+            link=dict(default=None, aliases=['name']),
+            package=dict(default=None, aliases=['pkg', 'path', 'target']),
         )
     )
 
@@ -155,9 +165,9 @@ def main():
     if p['package'] is None:
         module.fail_json(msg='package=name is required')
     if p['package'] == 'best':
-        best(module,p['link'])
+        best(module, p['link'])
     if re.match(r'/.+', p['package']):
-        set_to_target(module,p['link'],p['package'])
+        set_to_target(module, p['link'], p['package'])
     else:
         module.fail_json(msg='Package options needs to be path oder "best"')
 
