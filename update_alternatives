@@ -86,7 +86,8 @@ def run_ua(command):
         out = ''
     else:
         rc = cmd.returncode
-        return rc, out, err
+
+    return rc, out, err
 
 
 def ua_status(m, link):
