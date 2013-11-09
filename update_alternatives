@@ -24,10 +24,10 @@ short_description: Handle debian C(update-alternatives) in a idempotent way
 description:
     - Handle debian C(update-alternatives) in a idempotent way.
       Maintain symbolic links determining default commands.
-      Can ensure that the highest priority alternative is choosen or
-      select a specific binary as the choosen one
+      Can ensure that the highest priority alternative is chosen or
+      select a specific binary as the chosen one
     
-version_added: "0.8"
+version_added: "0.9"
 author: Philipp Grau
 notes:
     - This applies to Debian and Ubuntu systems only!
@@ -35,7 +35,7 @@ options:
 # One or more of the following
     link:
         description:
-            - Name of the link group (e.g. editor, awk). To list aviable link groups
+            - Name of the link group (e.g. editor, awk). To list available link groups
               use C(update-alternatives --get-selections)  
         required: true
         default: null
