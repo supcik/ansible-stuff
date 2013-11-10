@@ -107,6 +107,7 @@ class Alternative(object):
                 msg="'update-alternatives --query %s' failed: %s" % (link, err))
             self.module.exit_json(changed=True)
 
+        # I will come with a better solution for this regexp later
         result = re.match(r"""
             ^(?:Name:\s+.+\n)?
             Link:\s+(?P<link>.+)\n
