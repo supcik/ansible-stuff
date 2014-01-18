@@ -27,7 +27,7 @@ description:
       Can ensure that the highest priority alternative is chosen or
       select a specific binary as the chosen one
     
-version_added: "0.9"
+version_added: "0.9.2"
 author: Philipp Grau
 notes:
     - This applies to Debian and Ubuntu systems only!
@@ -72,7 +72,7 @@ UA = "/usr/sbin/update-alternatives"
 
 
 class Alternative(object):
-    def __init__(self, module, command="update-alternative", path="/usr/sbin"):
+    def __init__(self, module, command="update-alternatives", path="/usr/sbin"):
         self.module = module
         self.command = command
         self.path = path
@@ -81,7 +81,7 @@ class Alternative(object):
         return os.path.exists(os.path.join(self.path, self.command))
 
     def run(self, arguments):
-        command = " ".join(os.path.join(self.path, self.command), arguments)
+        command = " ".join([os.path.join(self.path, self.command), arguments])
         try:
             cmd = subprocess.Popen(
                 command, shell=True,
@@ -107,22 +107,17 @@ class Alternative(object):
                 msg="'update-alternatives --query %s' failed: %s" % (link, err))
             self.module.exit_json(changed=True)
 
-        # I will come with a better solution for this regexp later
-        result = re.match(r"""
-            ^(?:Name:\s+.+\n)?
-            Link:\s+(?P<link>.+)\n
-            (?:Slaves:\n
-            (?:\s+.+\n)*)?
-            Status:\s+(?P<status>.+)\n
-            Best:\s+(?P<best>.+)\n
-            Value:\s+(?P<value>.+)
-            """, out, re.MULTILINE | re.VERBOSE)
+        result = dict()
+        for key in ['Link', 'Status', 'Best', 'Value']:
+            m = re.search(r'^{key}:\s+(?P<value>.+)'.format(key=key), out, re.MULTILINE)
+            if m is not None:
+                result[key] = m.group('value')
+            else:
+                self.module.fail_json(
+                    msg="Couldn't parse find '{0}' in output".format(key)
+                )
 
-        if not result:
-            self.module.fail_json(
-                msg="Couldn't parse update-alternatives output: %r" % (out,))
-
-        return result.group('link'), result.group('best'), result.group('value')
+        return result['Link'], result['Best'], result['Value']
 
     def best(self, link):
         g, b, v = self.status(link)
